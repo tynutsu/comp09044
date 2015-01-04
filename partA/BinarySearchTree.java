@@ -392,7 +392,7 @@ public class BinarySearchTree<E> extends AbstractSet<E>
         if (obj == null)
            throw new NullPointerException();
         Entry<E> e = root;
-        while (e != null) 
+        while (!e.isExternal()) 
         {
             comp = ((Comparable)obj).compareTo (e.element);
             if (comp == 0)
