@@ -139,6 +139,64 @@ public class BinarySearchTree<E> extends AbstractSet<E>
 		return result;
 	} // method height()
 	
+	/**
+	 * method that displays the tree in breadth first order
+	 * using the algorithm from chapter 9 Binary Trees page 392
+	 * from the Data Structures and the Java Collections Framework book
+	 * Algorithm:
+	 * if tree is not empty)
+	 * 		queue.enqueue(tree)
+	 * 		while haven`t processed all nodes
+	 * 			temporary tree = queue.dequeue
+	 * 			process the root (store the element in the array)
+	 * 			if left subtree ot temporary tree is not empty
+	 * 				queue.enqueue(temporary`s left sub tree)
+	 * 			endif
+	 * 			if right subtree of temporary tree is not empty
+	 * 				queue.enqueue(temporary`s right sub tree)
+	 * 			endif
+	 * 		end while
+	 * 		display the array of elements
+	 * 	else
+	 * 		tree is empty
+	 *  endif
+	 *  			
+	 */
+	public void displayBreadthFirst() {
+		Entry entry = root;
+		if (entry != null) {
+			Queue<Entry> queue = new LinkedList<Entry>();
+			String[] listOfElements = new String[size];		// array that holds only nodes with values
+			queue.add(entry);
+
+			int i = 0;
+			while (i < size) {
+				Entry temporary = queue.remove();
+			
+				listOfElements[i] =  temporary.element.toString();
+				i++;
+				
+
+				if (temporary.left != null) {
+					queue.add(temporary.left);
+				}
+				if (temporary.right != null) {
+					queue.add(temporary.right);
+				}
+			}
+			System.out.println("\nBreadth first display of all entries: ");
+			for (int k = 0; k < size; k++)
+			{
+				System.out.print(listOfElements[k] + "\t");
+			}
+			System.out.println();
+		} 
+		
+		else {
+			System.out.println("Tree is empty...");
+		}
+	} // method displayBreadthFirst()
+	
     /**
      *  Returns an iterator positioned at the smallest element in this 
      *  BinarySearchTree object.
@@ -548,7 +606,7 @@ public class BinarySearchTree<E> extends AbstractSet<E>
      		this.right = null;
      		this.element = null;
      		return value;
-     	} // method makeExternal
+     	} // method makeExternal()
      	
         /**
          * converts this external node to an internal node containing the given 
@@ -563,7 +621,7 @@ public class BinarySearchTree<E> extends AbstractSet<E>
     		this.element = element;
     		this.left = new Entry<E>(null, this);
     		this.right = new Entry<E>(null, this);
-    	} // method makeInternal
+    	} // method makeInternal()
         
     } // class Entry
 
