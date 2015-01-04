@@ -1,5 +1,13 @@
 package partA;
-
+/**
+ * Changes performed to default binary search tree:
+ * - added new constructor for Entry that creates a specific type of node
+ * 		(internal or external)
+ * - added method isExternal that checks if a node is external or not
+ * - added method makeExternal() converts current node into an external node
+ * - added method makeInternal(E element) converts current node into an internal node
+ * 
+ */
 import java.util.*;
 
 public class BinarySearchTree<E> extends AbstractSet<E> 
@@ -9,7 +17,7 @@ public class BinarySearchTree<E> extends AbstractSet<E>
     protected int size;        
     
     /**
-     *  Initializes this BinarySearchTree object to be empty, to contain only elements
+     *  Initialises this BinarySearchTree object to be empty, to contain only elements
      *  of type E, to be ordered by the Comparable interface, and to contain no 
      *  duplicate elements.
      *
@@ -22,7 +30,7 @@ public class BinarySearchTree<E> extends AbstractSet<E>
 
 
     /**
-     * Initializes this BinarySearchTree object to contain a shallow copy of
+     * Initialises this BinarySearchTree object to contain a shallow copy of
      * a specified BinarySearchTree object.
      * The worstTime(n) is O(n), where n is the number of elements in the
      * specified BinarySearchTree object.
@@ -131,7 +139,9 @@ public class BinarySearchTree<E> extends AbstractSet<E>
      *  @throws NullPointerException - if element is null.
      *
      */
-    public boolean add (E element)  
+    
+	
+	public boolean add (E element)  
     {
         if (root == null) 
         {
@@ -437,7 +447,73 @@ public class BinarySearchTree<E> extends AbstractSet<E>
              this.element = element;
              this.parent = parent;
          } // constructor
+         
+         /**
+          * Initializes this Entry object and specifies if it is internal
+          * @param element - value of the element
+          * @param parent - updates link to parent
+          * @param shouldBeInternal - will decide if node is internal or not
+          */
+     	public Entry(E element, Entry<E> parent, boolean shouldBeInternal) 
+     	{
+     		this.parent = parent;
+     		
+     		if (shouldBeInternal)
+     		{
+     			makeInternal(element);
+     		}
+     		else
+     		{
+     			makeExternal();
+     		}
+     	} // constructor that can create a specific node (internal or external)
 
+     	/**
+         * method to check if the node is external or not
+         * a node is external if the element and left and right 
+         * children are null
+         * @return true if is external
+         */
+     	public boolean isExternal()
+     	{
+     		boolean leftLinkIsNull 	= (this.left == null);
+     		boolean rightLinkIsNull = (this.right == null);
+     		boolean elementIsNull 	= (this.element == null);
+     		boolean isExternal = (leftLinkIsNull && rightLinkIsNull && elementIsNull);
+     		
+     		return isExternal;
+     	} // method isExternal()
+     	
+     	/**
+         * converts this internal node to an external node and returns the element 
+         * that the internal node contained (used when deleting an internal node
+         * that has no other internal nodes as children)  
+         * @return the contained element before conversion
+         */
+        public E makeExternal() 
+        {
+        	E value = this.element;
+     		this.left = null;
+     		this.right = null;
+     		this.element = null;
+     		return value;
+     	} // method makeExternal
+     	
+        /**
+         * converts this external node to an internal node containing the given 
+         * element and adds two new external nodes as the left and right children of
+         * the node (used when inserting an element into the tree)
+         * an internal node does not have any null fields
+         * so the element cannot be null, and neither the children
+         * @param element is the element to be added
+         */
+        public void makeInternal(E element) 
+        {
+    		this.element = element;
+    		this.left = new Entry<E>(null, this);
+    		this.right = new Entry<E>(null, this);
+    	} // method makeInternal
+        
     } // class Entry
 
 } // class BinarySearchTree
