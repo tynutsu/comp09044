@@ -106,7 +106,6 @@ public class BinarySearchTree<E> extends AbstractSet<E>
 	 * @param entry - is the (sub)tree that will have its height calculated
 	 * @returns 0 if the node is external
 	 */
-
 	private int calculateHeight(Entry<E> entry) 
 	{
 		if (entry == null) 
@@ -162,18 +161,27 @@ public class BinarySearchTree<E> extends AbstractSet<E>
 	 *  endif
 	 *  			
 	 */
+	@SuppressWarnings("rawtypes")
 	public void displayBreadthFirst() {
 		Entry entry = root;
 		if (entry != null) {
-			Queue<Entry> queue = new LinkedList<Entry>();
+			int sizeWithNull = 2*size + 1;	// including null nodes
+			Queue<Entry> queue = new LinkedList<Entry>();			
 			String[] listOfElements = new String[size];		// array that holds only nodes with values
+			String[] listOfElementsWithNull = new String[sizeWithNull]; 	// array including null nodes
 			queue.add(entry);
 
 			int i = 0;
-			while (i < size) {
+			int j = 0;
+			while (i < sizeWithNull) {
 				Entry temporary = queue.remove();
-			
-				listOfElements[i] =  temporary.element.toString();
+				if (temporary.element == null)
+					listOfElementsWithNull[i] = "null";
+				else {
+					listOfElementsWithNull[i] = temporary.element.toString();
+					listOfElements[j] =  temporary.element.toString();
+					j++;
+				}
 				i++;
 				
 
@@ -184,7 +192,12 @@ public class BinarySearchTree<E> extends AbstractSet<E>
 					queue.add(temporary.right);
 				}
 			}
-			System.out.println("\nBreadth first display of all entries: ");
+			System.out.println("\nBreadth first display including null entries: ");
+			for (int k = 0; k < sizeWithNull; k++)
+			{
+				System.out.print(listOfElementsWithNull[k] + "\t");
+			}
+			System.out.println("\nBreadth first display without null entries: ");
 			for (int k = 0; k < size; k++)
 			{
 				System.out.print(listOfElements[k] + "\t");
@@ -246,51 +259,89 @@ public class BinarySearchTree<E> extends AbstractSet<E>
      *  @throws ClassCastException - if element cannot be compared to the 
      *                  elements already in this BinarySearchTree object.
      *  @throws NullPointerException - if element is null.
-     *
-     */
     
-	
-	public boolean add (E element)  
-    {
-        if (root == null) 
-        {
-            if (element == null)
-                throw new NullPointerException();
-            root = new Entry<E> (element, null);
-            size++;             
-            return true;
-        } // empty tree
-        else 
-        {
-            Entry<E> temp = root;
-
-            int comp;
-
-            while (true) 
-            {
-                comp =  ((Comparable)element).compareTo (temp.element);
-                if (comp == 0)
-                    return false;
-                if (comp < 0)
-                    if (temp.left != null)
-                        temp = temp.left;
-                    else 
-                    {
-                        temp.left = new Entry<E> (element, temp);
-                        size++;                             
-                        return true;
-                    } // temp.left == null
-                    else if (temp.right != null)
-                        temp = temp.right;
-                    else 
-                    {
-                        temp.right = new Entry<E> (element, temp);
-                        size++;                           
-                        return true;
-                    } // temp.right == null
-            } // while
-        } // root not null
-    } // method add
+     * Algorithm:
+	 * 	if the tree is empty
+	 * 		create new node at the root
+	 * 		increment size
+	 *  else
+	 *  	temp is the element to compare against (starting at the root)
+	 *  	if the added element is equal to the root
+	 *  		return unsuccessful insertion , element would be duplicate
+	 *  	else
+	 *  		if it`s less than the root
+	 *  			if the left subtree is an external node
+	 *  				create an internal node
+	 *  				update size
+	 *  				return successful insertion
+	 *  			else
+	 *  				go deeper to the left
+	 *  			endif
+	 *  		if it`s greater than the root
+	 *  			if the right subtree is an external node
+	 *  				create an internal node
+	 *  				update size
+	 *  				return successful insertion
+	 *  			else
+	 *  				go deeper to the right
+	 *  			endif
+	 *  		endif
+	 *  	endif
+	 *  endif
+	 *  		
+	 */	
+	public boolean add (E element)
+	{
+		if (root == null)
+		{
+			if (element == null)
+				throw new NullPointerException();
+			root = new Entry<E> (element, null, true);
+			size++;
+			return true;
+		} // empty tree
+		else
+		{
+			Entry <E> temp = root;
+			
+			int comp;
+			
+			while (true)
+			{
+				comp = ((Comparable)element).compareTo(temp.element);
+				if (comp == 0) 
+				{
+					return false;
+				}
+				if (comp < 0)
+				{
+					if (temp.left.isExternal())
+					{
+						temp.left.makeInternal(element);;
+						size++;
+						return true;
+					} // temp.left == null
+					else
+					{
+						temp = temp.left;
+					}
+				}
+				else
+				{
+					if (temp.right.isExternal()) 
+					{
+						temp.right.makeInternal(element);
+						size++;
+						return true;
+					} // temp.right == null
+					else
+					{
+						temp = temp.right;
+					} 
+				} 
+			} // while
+		} // root not null
+	} // method add
 
 
     /**
