@@ -84,6 +84,7 @@ public class BinarySearchTree<E> extends AbstractSet<E>
      */
     public int size( )
     {
+    	System.out.println("Current size of the tree is: "+ size);
         return size;
     } // method size()
     
@@ -91,7 +92,6 @@ public class BinarySearchTree<E> extends AbstractSet<E>
 	 * method that returns the level of the tree will return 0 if tree is empty
 	 * needed for the TreePrinter class to display a viewable tree
 	 */
-	@SuppressWarnings("rawtypes")
 	public int level(Entry<E> entry) {
 		if (entry == null)
 			return 0;
@@ -101,7 +101,44 @@ public class BinarySearchTree<E> extends AbstractSet<E>
 		}
 	} // method level()
   
+	/**
+	 * recursive method that returns the height of a (sub)tree 
+	 * @param entry - is the (sub)tree that will have its height calculated
+	 * @returns 0 if the node is external
+	 */
 
+	private int calculateHeight(Entry<E> entry) 
+	{
+		if (entry == null) 
+		{
+			return 0;
+		}
+		else 
+		{
+			return 1 + Math.max(calculateHeight(entry.left), calculateHeight(entry.right));
+		}
+	} // method calculateHeight()
+	
+	/**
+	 * 
+	 * @return 0 if the tree is empty or calls the calculateHeight method which
+	 * returns the height of the tree
+	 */
+	public int height()
+	{
+		int result;
+		if (root == null) 
+		{
+			result = 0;
+		}
+		else 
+		{
+			result = calculateHeight(root);
+		}
+		System.out.println("Height of the tree is: "+ result);
+		return result;
+	} // method height()
+	
     /**
      *  Returns an iterator positioned at the smallest element in this 
      *  BinarySearchTree object.
