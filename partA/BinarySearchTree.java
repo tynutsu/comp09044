@@ -86,6 +86,20 @@ public class BinarySearchTree<E> extends AbstractSet<E>
     {
         return size;
     } // method size()
+    
+    /**
+	 * method that returns the level of the tree will return 0 if tree is empty
+	 * needed for the TreePrinter class to display a viewable tree
+	 */
+	@SuppressWarnings("rawtypes")
+	public int level(Entry<E> entry) {
+		if (entry == null)
+			return 0;
+		else 
+		{
+			return 1 + Math.max(level(entry.left), level(entry.right));
+		}
+	} // method level()
   
 
     /**
