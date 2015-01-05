@@ -477,11 +477,11 @@ public class BinarySearchTree<E> extends AbstractSet<E>
     {
         if (e == null)
             return null;
-        else if (e.right != null) 
+        else if (e.right.element != null) 
         {
             // successor is leftmost Entry in right subtree of e
             Entry<E> p = e.right;
-            while (p.left != null)
+            while (p.left.element != null)
                 p = p.left;
             return p;
 
