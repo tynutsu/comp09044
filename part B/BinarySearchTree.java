@@ -343,7 +343,53 @@ public class BinarySearchTree<E> extends AbstractSet<E>
 		{
 			return insertAtLeaf(element);
 		}
-	}
+	} // method add()
+    
+    /**
+     * simple method that updates the parent of the
+     * node`s children
+     * @param node - node who`s children to adjust
+     */
+    private void updateParent(Entry<E> node)
+	{
+		node.left.parent = node;
+		node.right.parent = node;
+	} // method updateParent()
+	
+    /**
+     * using the algorithm from the coursework specifications and 
+     * the helper method updateParent() to perform a rightRotation
+     * @param oldRoot - root that will become a child after rotation
+     * @return the new root
+     */
+	private Entry<E> rotateRight(Entry<E> oldRoot) {
+		Entry<E> newRoot = oldRoot.left;
+		oldRoot.left = newRoot.right;
+		newRoot.right = oldRoot;
+		newRoot.parent = null;
+		updateParent(newRoot);
+		updateParent(oldRoot);
+		oldRoot.parent = newRoot;
+		
+		return newRoot;
+	} // method rotateRight()
+	
+	/**
+     * using the algorithm from the coursework specifications and 
+     * the helper method updateParent() to perform a leftRotation
+     * @param oldRoot - root that will become a child after rotation
+     * @return the new root
+     */
+	private Entry<E> rotateLeft(Entry<E> oldRoot) {
+		Entry<E> newRoot = oldRoot.right;
+		oldRoot.right = newRoot.left;
+		newRoot.left = oldRoot;
+		newRoot.parent = null;
+		newRoot.left.parent = newRoot;
+		oldRoot.parent = newRoot;
+		
+		return newRoot;
+	} // method rotateLeft()
     
     /**
      * 
