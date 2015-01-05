@@ -71,6 +71,7 @@ package partB;
  */
 import java.util.*;
 
+
 public class BinarySearchTree<E> extends AbstractSet<E> 
 {
     protected Entry<E> root;
@@ -392,15 +393,69 @@ public class BinarySearchTree<E> extends AbstractSet<E>
 	} // method rotateLeft()
     
     /**
+     * Adds a new elemenet at the root performing the right rotations
+     * where necessary to maintain the most recent element at 
+     * the BinarySearchTree`s root
      * 
-     * @param node
-     * @param element
-     * @return
+     * Algorithm:
+     * 	if the root is null 
+     * 		add new internal node
+     * 		return the node
+     * 	// endif
+     *  if the current node is an external node
+     *  	add new internal node
+     *  	return the node
+     *  else
+     *  	if the element is smaller than the root
+     *  		perform insertAtRoot the element on the left child of the node
+     *  		perform a right rotation around the resulted node
+     *  		the result is the new root, return it
+     *   	else (the element is greater than the root)
+     *   		perform insertAtRoot the element on the right child of the node
+     *  		perform a left rotation around the resulted node
+     *  		the result is the new root, return it
+     * 		// endif
+     *  //endif
+     * @param node - the entry where the element will be added
+     * @param element - value to be inserted
+     * @return the new ordered root (which is basically the new tree)
      */
     private Entry<E> insertAtRoot(Entry<E> node, E element)
     {
-    	return null;
-    } // method insertAtRoot
+		if (node == null) 
+		{
+			if (element == null)
+			{
+				throw new NullPointerException();
+			}
+			node = new Entry<E>(element, null, true);
+			size++;
+			return node;
+		} // empty tree
+		if (node.isExternal()) 
+		{
+			node = new Entry<E>(element, null, true);
+			size++;
+			return node;
+		} // used when calling insertAtRoot
+		else 
+		{
+			int comp = ((Comparable) element).compareTo(node.element);
+			
+			if (comp < 0) 
+			{
+				node.left = insertAtRoot(node.left, element);
+				node = rotateRight(node);
+				return node;	
+			}
+			else 
+			{
+				node.right = insertAtRoot(node.right, element);
+				node = rotateLeft(node);
+				return node;	
+			}
+		}
+	} // method insertAtRoot
 
     /**
      *  Ensures that this BinarySearchTree object contains a specified element.
