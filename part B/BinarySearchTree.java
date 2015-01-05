@@ -74,7 +74,7 @@ import java.util.*;
 public class BinarySearchTree<E> extends AbstractSet<E> 
 {
     protected Entry<E> root;
-
+    private boolean insertAtRoot;
     protected int size;        
     
     /**
@@ -87,8 +87,25 @@ public class BinarySearchTree<E> extends AbstractSet<E>
     {
         root = null;
         size = 0;  
+        insertAtRoot = false;
     } // default constructor
 
+    /**
+     * This constructor will change the way the elements are added into 
+     * the Binary Search Tree. If insertAtRoot is true, the most recent
+     * inserted elements will be closer to the root
+     * If insertAtRoot is false, it will have the same behaviour like
+     * using the default constructor, and will insert using the same way
+     * like it did in partA
+     * @param insertAtRoot - toggle that decides if the newly declared tree
+     * 		will insert elements at root or at leaf
+     */
+    public BinarySearchTree(boolean insertAtRoot)
+	{
+		root = null;
+		size = 0;
+		this.insertAtRoot = insertAtRoot;
+	} // constructor that inserts at root if true
 
     /**
      * Initialises this BinarySearchTree object to contain a shallow copy of
