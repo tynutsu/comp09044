@@ -1,74 +1,35 @@
 package partB;
 /**
- * Changes performed to default binary search tree, have been made in different steps
- * Some steps might modify a previous change to update the functionality of the methods
+ * Changes performed to default binary search tree, since last version of the BST (part A)
  * 
  * 
- * - added new constructor for Entry that creates a specific type of node
- * 		(internal or external)
- * - added method isExternal that checks if a node is external or not
- * - added method makeExternal() converts current node into an external node
- * - added method makeInternal(E element) converts current node into an internal node
+ * - added private field insertAtRoot
+ * - initialised insertAtRoot to false in the default BST constructor
+ * - added another BST constructor that can change at creation how the
+ *		entries will be inserted: at leaf or at root 
  * 
  * 
- * - added level() to be used with an imported class (TreePrinter) that
- *		prints the diagram of the tree. It requires the level of the tree to
- *		perform a decent representation of the binary search tree
+ * - renamed old method add to insertAtLeaf
+ * - prepared empty method insertAtRoot
+ * - added new method add that decides which type of insertion to perform
+ * - added if statement in getEntry() to check if the root is null before
+ * 		the rest of method and in case is true, will return null
  * 
  * 
- * - method size() now displays the size of the tree at every call
- * - added recursive method calculateHeight() that returns the height of
- *		the tree passed in as parameter
- * - added method height that displays the height of the tree at every call
- * 		or 0 if the tree is empty
- * 
- * 
- * - added displayBreadthFirst() method that shows all elements of the tree
- * 		top to bottom
- * 
- * 
- * -modified add() method:
- * 		when the root is empty, after the insertion becomes internal by creating
- *		an entry with empty nodes for the left/right children
- * 		in the while loop, now we are checking if the each of the children is an
- *		external node, and makes it internal instead of checking if they are
- * 		null
- * - modified displayBreadthFirst():
- * 		= added an int that holds the total size of the tree including the null
- *		external nodes
- * 		= added another string that holds the array of elements including the null
- *		elements (listOfElementsWithNull)
- *		= now the while loop goes from 0 to the total number of nodes instead of
- *		going from 0 to the size of the tree (given by the number of internal
- *		nodes)
- *		= added an if statement that, when the element is null adds "null" string
- * 		in the List of elements with null
- *		= added a for loop to display the listOfElementsWithoutNull too
+ * - added method updateParent() that repairs the links between a node and
+ * 		his children
+ * - added methods rotateRight() and rotateLeft() to perform rotations that
+ *		allow the newest inserted element to be at the root
  *
  *
- * - modified getEntry() method:
- *		now checking if e is not external instead of checking if is null
- *
- *
- * - modified successor() method
- *		instead of checking if the right child of the entry is null, to move in
- *		the right subtree, we check if the right child`s element is null
- * 		also to avoid going too much on the left and ending in an external node,
- * 		we now check if the left child`s element is not null instead of checking
- *		if the child is null.
- *
- *
- * - modified successor()
- *		now we also return null when e is external node;
- * - modified TreeIterator`s default constructor:
- *		now the loop goes to the left until the node is external instead of
- *		going until the node is null
- *
+ * - added insertAtRoot() method
  * 
- * -modified calculateHeight()
- *		the method should return 0 when the entry is external instead of
- *		returning 0 when null; this prevents the recursive method going too deep
- */
+ * 
+ * - modified displayBreadthFirst:
+ *		now looping while queue is not empty instead of looping from i to
+ *		sizeWithNull;
+ * 
+ **/
 import java.util.*;
 
 
