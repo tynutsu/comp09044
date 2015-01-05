@@ -108,7 +108,7 @@ public class BinarySearchTree<E> extends AbstractSet<E>
 	 */
 	private int calculateHeight(Entry<E> entry) 
 	{
-		if (entry == null) 
+		if (entry.isExternal()) 
 		{
 			return 0;
 		}
