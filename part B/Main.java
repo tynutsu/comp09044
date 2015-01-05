@@ -1,6 +1,6 @@
-package partA;
+package partB;
 
-import partA.BinarySearchTree.TreeIterator;
+import partB.BinarySearchTree.TreeIterator;
 
 public class Main {
 
