@@ -475,7 +475,7 @@ public class BinarySearchTree<E> extends AbstractSet<E>
      */
     protected Entry<E> successor (Entry<E> e) 
     {
-        if (e == null)
+        if (e == null || e.isExternal())
             return null;
         else if (e.right.element != null) 
         {
@@ -518,7 +518,7 @@ public class BinarySearchTree<E> extends AbstractSet<E>
         {             
             next = root;
             if (next != null)
-                while (next.left != null)
+                while (!next.left.isExternal())
                     next = next.left;
         } // default constructor
 
