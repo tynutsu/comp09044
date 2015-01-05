@@ -32,11 +32,13 @@ public class Main {
 		System.out.println("\n"+x.contains(31)+"\n");
 		x.displayBreadthFirst();
 		TreePrinter.printNode(x);
-		//x.remove(31);
+		x.remove(31);
 		x.displayBreadthFirst();
 		TreePrinter.printNode(x);
-		//x.remove(31);
-		
+		x.remove(31);
+		go.testIterator(24);
+		go.testIterate();
+		go.testSuccessor(24, 31);
 	}
 
 }

@@ -252,7 +252,7 @@ public class BinarySearchTree<E> extends AbstractSet<E>
 
 			int i = 0;
 			int j = 0;
-			while (i < sizeWithNull) {
+			while (!queue.isEmpty()) {
 				Entry temporary = queue.remove();
 				if (temporary.element == null)
 					listOfElementsWithNull[i] = "null";
