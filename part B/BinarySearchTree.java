@@ -321,7 +321,40 @@ public class BinarySearchTree<E> extends AbstractSet<E>
         return getEntry (obj) != null;
     } // method contains
 
- 
+    /**
+     * This method eliminates the possibility to add duplicates and 
+     * will return false when attempting to add an element that already exists
+     * Once we are sure that the element can be added, we decide its 
+     * destination: insertAtRoot or insertAtLeaf
+     * @param element - the element to be checked for duplicates and to be added
+     * 		if unique
+     */
+    public boolean add(E element) {
+		if (contains(element))
+		{
+			return false;	// do not allow adding duplicates
+		}
+		if (insertAtRoot)
+		{ 
+			root = insertAtRoot(root,element);
+			return true;
+		}
+		else 
+		{
+			return insertAtLeaf(element);
+		}
+	}
+    
+    /**
+     * 
+     * @param node
+     * @param element
+     * @return
+     */
+    private Entry<E> insertAtRoot(Entry<E> node, E element)
+    {
+    	return null;
+    } // method insertAtRoot
 
     /**
      *  Ensures that this BinarySearchTree object contains a specified element.
@@ -368,7 +401,7 @@ public class BinarySearchTree<E> extends AbstractSet<E>
 	 *  endif
 	 *  		
 	 */	
-	public boolean add (E element)
+	private boolean insertAtLeaf (E element)
 	{
 		if (root == null)
 		{
@@ -419,7 +452,7 @@ public class BinarySearchTree<E> extends AbstractSet<E>
 				} 
 			} // while
 		} // root not null
-	} // method add
+	} // method insertAtLeaf()
 
 
     /**
@@ -469,6 +502,8 @@ public class BinarySearchTree<E> extends AbstractSet<E>
 
         if (obj == null)
            throw new NullPointerException();
+        if (root == null)
+        	return null;
         Entry<E> e = root;
         while (!e.isExternal()) 
         {
