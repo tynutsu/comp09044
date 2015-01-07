@@ -8,11 +8,7 @@ public class Main {
 		// TODO Auto-generated method stub
 		TreeManager start = new TreeManager();
 		
-		start.buildTrees(500);
+		start.buildTrees(2000);
 		System.out.println(start.List[0].value());
-		System.out.println(start.toTree.size());
-		start.toLeaf.size();
-		start.toRoot.size();
-		start.performSearches(10000);
 		}
 }
