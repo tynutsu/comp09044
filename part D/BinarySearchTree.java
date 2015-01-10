@@ -1,80 +1,43 @@
-package partA;
+package partD;
 /**
- * Changes performed to default binary search tree, have been made in different steps
- * Some steps might modify a previous change to update the functionality of the methods
+ * Changes performed to default binary search tree, since last version of the BST (part A)
  * 
  * 
- * - added new constructor for Entry that creates a specific type of node
- * 		(internal or external)
- * - added method isExternal that checks if a node is external or not
- * - added method makeExternal() converts current node into an external node
- * - added method makeInternal(E element) converts current node into an internal node
+ * - added private field insertAtRoot
+ * - initialised insertAtRoot to false in the default BST constructor
+ * - added another BST constructor that can change at creation how the
+ *		entries will be inserted: at leaf or at root 
  * 
  * 
- * - added level() to be used with an imported class (TreePrinter) that
- *		prints the diagram of the tree. It requires the level of the tree to
- *		perform a decent representation of the binary search tree
+ * - renamed old method add to insertAtLeaf
+ * - prepared empty method insertAtRoot
+ * - added new method add that decides which type of insertion to perform
+ * - added if statement in getEntry() to check if the root is null before
+ * 		the rest of method and in case is true, will return null
  * 
  * 
- * - method size() now displays the size of the tree at every call
- * - added recursive method calculateHeight() that returns the height of
- *		the tree passed in as parameter
- * - added method height that displays the height of the tree at every call
- * 		or 0 if the tree is empty
- * 
- * 
- * - added displayBreadthFirst() method that shows all elements of the tree
- * 		top to bottom
- * 
- * 
- * -modified add() method:
- * 		when the root is empty, after the insertion becomes internal by creating
- *		an entry with empty nodes for the left/right children
- * 		in the while loop, now we are checking if the each of the children is an
- *		external node, and makes it internal instead of checking if they are
- * 		null
- * - modified displayBreadthFirst():
- * 		= added an int that holds the total size of the tree including the null
- *		external nodes
- * 		= added another string that holds the array of elements including the null
- *		elements (listOfElementsWithNull)
- *		= now the while loop goes from 0 to the total number of nodes instead of
- *		going from 0 to the size of the tree (given by the number of internal
- *		nodes)
- *		= added an if statement that, when the element is null adds "null" string
- * 		in the List of elements with null
- *		= added a for loop to display the listOfElementsWithoutNull too
+ * - added method updateParent() that repairs the links between a node and
+ * 		his children
+ * - added methods rotateRight() and rotateLeft() to perform rotations that
+ *		allow the newest inserted element to be at the root
  *
  *
- * - modified getEntry() method:
- *		now checking if e is not external instead of checking if is null
- *
- *
- * - modified successor() method
- *		instead of checking if the right child of the entry is null, to move in
- *		the right subtree, we check if the right child`s element is null
- * 		also to avoid going too much on the left and ending in an external node,
- * 		we now check if the left child`s element is not null instead of checking
- *		if the child is null.
- *
- *
- * - modified successor()
- *		now we also return null when e is external node;
- * - modified TreeIterator`s default constructor:
- *		now the loop goes to the left until the node is external instead of
- *		going until the node is null
- *
+ * - added insertAtRoot() method
  * 
- * -modified calculateHeight()
- *		the method should return 0 when the entry is external instead of
- *		returning 0 when null; this prevents the recursive method going too deep
- */
+ * 
+ * - modified displayBreadthFirst:
+ *		now looping while queue is not empty instead of looping from i to
+ *		sizeWithNull;
+ * 
+ **/
 import java.util.*;
+import java.io.*;
 
-public class BinarySearchTree<E> extends AbstractSet<E> 
+
+public class BinarySearchTree<E> extends AbstractSet<E> implements Serializable 
 {
     protected Entry<E> root;
-
+    private boolean insertAtRoot;
     protected int size;        
     
     /**
@@ -87,8 +50,25 @@ public class BinarySearchTree<E> extends AbstractSet<E>
     {
         root = null;
         size = 0;  
+        insertAtRoot = false;
     } // default constructor
 
+    /**
+     * This constructor will change the way the elements are added into 
+     * the Binary Search Tree. If insertAtRoot is true, the most recent
+     * inserted elements will be closer to the root
+     * If insertAtRoot is false, it will have the same behaviour like
+     * using the default constructor, and will insert using the same way
+     * like it did in partA
+     * @param insertAtRoot - toggle that decides if the newly declared tree
+     * 		will insert elements at root or at leaf
+     */
+    public BinarySearchTree(boolean insertAtRoot)
+	{
+		root = null;
+		size = 0;
+		this.insertAtRoot = insertAtRoot;
+	} // constructor that inserts at root if true
 
     /**
      * Initialises this BinarySearchTree object to contain a shallow copy of
@@ -129,7 +109,7 @@ public class BinarySearchTree<E> extends AbstractSet<E>
     public boolean equals (Entry<E> p, Entry<? extends E> q)
     {
        if (p == null || q == null)
-           return p == q;   
+           return p == q;      
        if (p.isExternal() && q.isExternal())
     	   return true;
        if (!p.element.equals (q.element))
@@ -236,7 +216,7 @@ public class BinarySearchTree<E> extends AbstractSet<E>
 
 			int i = 0;
 			int j = 0;
-			while (i < sizeWithNull) {
+			while (!queue.isEmpty()) {
 				Entry temporary = queue.remove();
 				if (temporary.element == null)
 					listOfElementsWithNull[i] = "null";
@@ -306,7 +286,140 @@ public class BinarySearchTree<E> extends AbstractSet<E>
         return getEntry (obj) != null;
     } // method contains
 
- 
+    /**
+     * This method eliminates the possibility to add duplicates and 
+     * will return false when attempting to add an element that already exists
+     * Once we are sure that the element can be added, we decide its 
+     * destination: insertAtRoot or insertAtLeaf
+     * @param element - the element to be checked for duplicates and to be added
+     * 		if unique
+     */
+    public boolean add(E element) {
+		if (contains(element))
+		{
+			return false;	// do not allow adding duplicates
+		}
+		if (insertAtRoot)
+		{ 
+			root = insertAtRoot(root,element);
+			return true;
+		}
+		else 
+		{
+			return insertAtLeaf(element);
+		}
+	} // method add()
+    
+    /**
+     * simple method that updates the parent of the
+     * node`s children
+     * @param node - node who`s children to adjust
+     */
+    private void updateParent(Entry<E> node)
+	{
+		node.left.parent = node;
+		node.right.parent = node;
+	} // method updateParent()
+	
+    /**
+     * using the algorithm from the coursework specifications and 
+     * the helper method updateParent() to perform a rightRotation
+     * @param oldRoot - root that will become a child after rotation
+     * @return the new root
+     */
+	private Entry<E> rotateRight(Entry<E> oldRoot) {
+		Entry<E> newRoot = oldRoot.left;
+		oldRoot.left = newRoot.right;
+		newRoot.right = oldRoot;
+		newRoot.parent = null;
+		updateParent(newRoot);
+		updateParent(oldRoot);
+		oldRoot.parent = newRoot;
+		
+		return newRoot;
+	} // method rotateRight()
+	
+	/**
+     * using the algorithm from the coursework specifications and 
+     * the helper method updateParent() to perform a leftRotation
+     * @param oldRoot - root that will become a child after rotation
+     * @return the new root
+     */
+	private Entry<E> rotateLeft(Entry<E> oldRoot) {
+		Entry<E> newRoot = oldRoot.right;
+		oldRoot.right = newRoot.left;
+		newRoot.left = oldRoot;
+		newRoot.parent = null;
+		newRoot.left.parent = newRoot;
+		oldRoot.parent = newRoot;
+		
+		return newRoot;
+	} // method rotateLeft()
+    
+    /**
+     * Adds a new elemenet at the root performing the right rotations
+     * where necessary to maintain the most recent element at 
+     * the BinarySearchTree`s root
+     * 
+     * Algorithm:
+     * 	if the root is null 
+     * 		add new internal node
+     * 		return the node
+     * 	// endif
+     *  if the current node is an external node
+     *  	add new internal node
+     *  	return the node
+     *  else
+     *  	if the element is smaller than the root
+     *  		perform insertAtRoot the element on the left child of the node
+     *  		perform a right rotation around the resulted node
+     *  		the result is the new root, return it
+     *   	else (the element is greater than the root)
+     *   		perform insertAtRoot the element on the right child of the node
+     *  		perform a left rotation around the resulted node
+     *  		the result is the new root, return it
+     * 		// endif
+     *  //endif
+     * @param node - the entry where the element will be added
+     * @param element - value to be inserted
+     * @return the new ordered root (which is basically the new tree)
+     */
+    private Entry<E> insertAtRoot(Entry<E> node, E element)
+    {
+		if (node == null) 
+		{
+			if (element == null)
+			{
+				throw new NullPointerException();
+			}
+			node = new Entry<E>(element, null, true);
+			size++;
+			return node;
+		} // empty tree
+		if (node.isExternal()) 
+		{
+			node = new Entry<E>(element, null, true);
+			size++;
+			return node;
+		} // used when calling insertAtRoot
+		else 
+		{
+			int comp = ((Comparable) element).compareTo(node.element);
+			
+			if (comp < 0) 
+			{
+				node.left = insertAtRoot(node.left, element);
+				node = rotateRight(node);
+				return node;	
+			}
+			else 
+			{
+				node.right = insertAtRoot(node.right, element);
+				node = rotateLeft(node);
+				return node;	
+			}
+		}
+	} // method insertAtRoot
 
     /**
      *  Ensures that this BinarySearchTree object contains a specified element.
@@ -353,7 +466,7 @@ public class BinarySearchTree<E> extends AbstractSet<E>
 	 *  endif
 	 *  		
 	 */	
-	public boolean add (E element)
+	private boolean insertAtLeaf (E element)
 	{
 		if (root == null)
 		{
@@ -404,7 +517,7 @@ public class BinarySearchTree<E> extends AbstractSet<E>
 				} 
 			} // while
 		} // root not null
-	} // method add
+	} // method insertAtLeaf()
 
 
     /**
@@ -454,6 +567,8 @@ public class BinarySearchTree<E> extends AbstractSet<E>
 
         if (obj == null)
            throw new NullPointerException();
+        if (root == null)
+        	return null;
         Entry<E> e = root;
         while (!e.isExternal()) 
         {
@@ -652,7 +767,7 @@ public class BinarySearchTree<E> extends AbstractSet<E>
 
     } // class TreeIterator
 
-    protected static class Entry<E> 
+    protected static class Entry<E> implements Serializable
     {
         protected E element;
 

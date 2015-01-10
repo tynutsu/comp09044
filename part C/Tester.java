@@ -1,8 +1,8 @@
-package partA;
+package partC;
 
 import java.util.Iterator;
 
-import partA.BinarySearchTree.TreeIterator;
+import partC.BinarySearchTree.TreeIterator;
 
 
 /**
@@ -368,20 +368,21 @@ public class Tester <E> {
 	}
 	
 	/**
-	 * This method will build a tree and perform a series of tests 
-	 * on it, displaying at the end a report 
+	 * This method will build a tree with default insertion algorithm and perform a 
+	 * series of tests on it, displaying at the end a report 
 	 */
-	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public static void performDefaultTests()
 	{
 		Tester x = new Tester();
+		BinarySearchTree treeWithRootInsertion = new BinarySearchTree(true);
+		x.toTest(treeWithRootInsertion);
 		x.display();
 		x.testIterate();
 		x.add(21, 1, 1, 21);	// item 21, size 1, height 1, hash 21, iterator 21
 		x.add(25, 2, 2, 46);	// item 25, size 2, height 2, hash 46, iterator 21
-		x.add(17, 3, 2, 63);	// item 17, size 3, height 2, hash 63, iterator 17
-		x.add(12, 4, 3, 75);	// item 12, size 4, height 3, hash 75, iterator 12
-		x.add(9, 5, 4, 84);		// item  9, size 5, height 4, hash 84, iterator 9
+		x.add(17, 3, 3, 63);	// item 17, size 3, height 3, hash 63, iterator 17
+		x.add(12, 4, 4, 75);	// item 12, size 4, height 4, hash 75, iterator 12
+		x.add(9, 5, 5, 84);		// item  9, size 5, height 5, hash 84, iterator 9
 		x.testContain(17, true);
 		x.testContain(19,  false);
 		x.remove(21);			// size 4, height 4, hash 63, iterator 9
@@ -401,9 +402,43 @@ public class Tester <E> {
 		x.errorReport();
 	} // method performDefaultTests()
 	
-	public void reset()
+	/**
+	 * This method will use the tree passed as parameter algorithm and perform a 
+	 * series of tests on it, displaying at the end a report 
+	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public static void performDefaultTests(BinarySearchTree tree)
 	{
-		test = new BinarySearchTree();
+		Tester x = new Tester();
+		x.toTest(tree);
+		x.display();
+		x.testIterate();
+		x.add(21, 1, 1, 21);	// item 21, size 1, height 1, hash 21, iterator 21
+		x.add(25, 2, 2, 46);	// item 25, size 2, height 2, hash 46, iterator 21
+		x.add(17, 3, 2, 63);	// item 17, size 3, height 2, hash 63, iterator 17
+		x.add(12, 4, 3, 75);	// item 12, size 4, height 3, hash 75, iterator 12
+		x.add(9, 5, 4, 84);		// item  9, size 5, height 4, hash 84, iterator 9
+		x.testContain(17, true);
+		x.testContain(19,  false);
+		x.remove(21);			// size 4, height 4, hash 63, iterator 9
+		x.remove(9);			// size 3, height 3, hash 54, iterator 12
+		x.testHashCode(54);		
+		x.testIterator(12);
+		x.testHeight(3);
+		x.testSize(3);
+		x.add(10);				// item 10, size 4, height 4, hash 64, iterator 10
+		x.testIterator(10);
+		x.testHeight(4);
+		x.testHashCode(64);
+		x.errorReport();
+		x.testIterate();
+		x.testHashCode(53);		// should fail
+		x.errorReport();
+	} // method performDefaultTests()
+	
+	public void reset(BinarySearchTree tree)
+	{
+		test = tree;
 	}
 	
 }

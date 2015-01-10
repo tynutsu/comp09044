@@ -6,39 +6,24 @@ public class Main {
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		Tester go = new Tester();
-		
-		
-		BinarySearchTree <Integer> x = new BinarySearchTree <Integer>(true);
-		BinarySearchTree.TreeIterator loop = (TreeIterator) x.iterator();
-		go.toTest(x);
-		go.performDefaultTests();
-		
-		x.add(72); x.add(31); x.add(44); x.add(87); x.add(37); x.add(75);x.add(60);
-		x.size();
-		System.out.println("hash: " +x.hashCode() + "level: "+ x.level(x.root));
-		x.height();
-		x.level(x.root);
-		x.add(24); x.add(24);
-		x.size();
-		System.out.println("hash: " +x.hashCode() + " level: "+ x.level(x.root));
-		x.height();	
-		
-		System.out.println("ITERATING HERE");
-		while (loop.hasNext())
-		{
-			System.out.print(loop.next+" ");
-		}
-		System.out.println("\n"+x.contains(31)+"\n");
-		x.displayBreadthFirst();
-		TreePrinter.printNode(x);
-		x.remove(31);
-		x.displayBreadthFirst();
-		TreePrinter.printNode(x);
-		x.remove(31);
-		go.testIterator(24);
-		go.testIterate();
-		go.testSuccessor(24, 31);
+		Tester test = new Tester();
+		test.reset(new BinarySearchTree(true));
+		test.add(72); test.add(31);
+		test.testHashCode(103);
+		test.add(44); test.add(87); test.add(37); test.add(75); test.add(60); test.add(24); test.add(24);
+		test.testIterate();
+		test.testIterator(24);
+		test.testContain(31, true);
+		test.display();
+		test.remove(37);		// remove an entry with two internal nodes
+		test.remove(44);		// remove an entry with left internal node only
+		test.remove(72);		// remove an entry with two external nodes
+		test.remove(75);		// remove an entry with right internal node only 
+		test.remove(24);		// remove root
+		test.remove(24);		// remove inexistent item
+		test.remove(87);
+		test.remove(60);
+		test.errorReport();
 	}
 
 }

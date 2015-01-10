@@ -108,7 +108,9 @@ public class BinarySearchTree<E> extends AbstractSet<E>
     public boolean equals (Entry<E> p, Entry<? extends E> q)
     {
        if (p == null || q == null)
-           return p == q;      
+           return p == q;    
+       if (p.isExternal() && q.isExternal())
+    	   return true;
        if (!p.element.equals (q.element))
            return false;
        if (equals (p.left, q.left) && equals (p.right, q.right) )
@@ -595,14 +597,22 @@ public class BinarySearchTree<E> extends AbstractSet<E>
     protected Entry<E> deleteEntry (Entry<E> p) 
     {
         size--;
-
+        if (p.left != null && p.right != null)
         // If p has two children, replace p's element with p's successor's
         // element, then make p reference that successor.
-        if (p.left != null && p.right != null) 
+        if (!p.left.isExternal()&& !p.right.isExternal()) 
         {
             Entry<E> s = successor (p);
+            // there might be a case when the root is the largest element
+            // so has no successor (implicitly no parent)
+            // this means that the replacement will be the left child, the
+            // only option
+            if (s == null) {
+            	s = p.left;
+            }           
             p.element = s.element;
             p = s;
+           
         } // p had two children
 
 
@@ -610,7 +620,7 @@ public class BinarySearchTree<E> extends AbstractSet<E>
 
         Entry<E> replacement;
          
-        if (p.left != null)
+        if (p.left.element != null)
             replacement = p.left;
         else
             replacement = p.right;
